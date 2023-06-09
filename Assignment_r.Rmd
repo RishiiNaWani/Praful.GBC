@@ -1,0 +1,110 @@
+---
+title: "R Assignment"
+author: "Group"
+date: "2023-06-07"
+output: pdf_document
+---
+
+```{r}
+library(readxl)
+ World_City_Populations_2023 <- read_excel("C:/Users/rishi/Downloads/World City Populations 2023.xlsx", 
+     sheet = "World City Populations 2023")
+```
+Structure of data
+```{r}
+str(World_City_Populations_2023)
+```
+variables
+```{r}
+variables <- names(World_City_Populations_2023)
+variables
+```
+15 Rows
+```{r}
+head(World_City_Populations_2023, 15)
+```
+User Defined Functions
+```{r}
+calculatePopulationChange <- function(city) {
+  pop2022 <- World_City_Populations_2023$Population2022[World_City_Populations_2023$City == city]
+  pop2023 <- World_City_Populations_2023$Population2023[World_City_Populations_2023$City == city]
+  
+  if (length(pop2022) > 0 && length(pop2023) > 0) {
+    change <- (pop2023 - pop2022) / pop2022 * 100
+    return(change)
+  } else {
+    return("City not found!")
+  }
+}
+```
+filter data
+```{r}
+filtered_data <- World_City_Populations_2023[World_City_Populations_2023$growthRate > 0.05, ]
+```
+new data frame
+```{r}
+dependent_variable <- World_City_Populations_2023$Pop2023
+independent_variable <- World_City_Populations_2023$growthRate
+new_data <- data.frame(Dependent = dependent_variable, Independent = independent_variable)
+```
+removing missing
+```{r}
+World_City_Populations_2023 <- na.omit(World_City_Populations_2023)
+```
+Removing Duplicate Items
+```{r}
+World_City_Populations_2023 <- unique(World_City_Populations_2023)
+```
+Reordering Rows
+```{r}
+World_City_Populations_2023 <- World_City_Populations_2023[order(World_City_Populations_2023$rank, decreasing = TRUE), ]
+```
+Rename Column
+```{r}
+colnames(World_City_Populations_2023) <- c("Population2023", "Population2022", "City", "Country", "Continent", "GrowthRate", "Rank")
+```
+Add new variable
+```{r}
+World_City_Populations_2023$Population_double_2022 <- World_City_Populations_2023$Population2022 * 2
+```
+Training Set
+```{r}
+set.seed(123)
+train_indices <- sample(1:nrow(World_City_Populations_2023), size = 0.8 * nrow(World_City_Populations_2023), replace = FALSE)
+train_set <- World_City_Populations_2023[train_indices, ]
+```
+Summary
+```{r}
+summary(World_City_Populations_2023)
+```
+Mean, Median ,Mode
+```{r}
+mean_population2023 <- mean(World_City_Populations_2023$Population2023)
+median_population2023 <- median(World_City_Populations_2023$Population2023)
+range_population2023 <- range(World_City_Populations_2023$Population2023)
+print(mean_population2023)
+print(median_population2023)
+print(range_population2023)
+# to find mode
+rank <- World_City_Populations_2023$Rank
+tt <- table(as.vector(rank))
+mode_pop <- names(tt) [tt == max(tt)]
+print(mode_pop)
+```
+
+scatter plot
+
+```{r}
+plot(World_City_Populations_2023$Population2023, World_City_Populations_2023$GrowthRate, xlab = "Population 2023", ylab = "Growth Rate", main = "Scatter Plot")
+```
+BAr Plot
+```{r}
+barplot(World_City_Populations_2023$Population2023, names.arg = World_City_Populations_2023$City, xlab = "City", ylab = "Population 2023", main = "Population 2023 by City")
+```
+Correlation
+```{r}
+correlation <- cor(World_City_Populations_2023$Population2023, World_City_Populations_2023$GrowthRate)
+print(correlation)
+```
+
+
